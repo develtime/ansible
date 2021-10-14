@@ -8,3 +8,8 @@ deb:
     ubuntu_empty:
       ansible_connection: docker
       ansible_python_interpreter: /usr/bin/python3
+local:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: /usr/bin/python3
