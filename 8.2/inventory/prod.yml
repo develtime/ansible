@@ -1,0 +1,14 @@
+---
+all:
+  vars:
+    ansible_connection: docker
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_user: root
+  children:
+    elasticsearch:
+      hosts:
+        elastic_ubuntu:
+    kibana:
+      hosts:
+        kibana_ubuntu:
+          elastic_url: http://elastic_ubuntu:9200

@@ -1,0 +1,7 @@
+---
+elastic_version: "7.10.1"
+elastic_home: "/opt/elastic/{{ elastic_version }}"
+
+elastic_package: "elasticsearch-{{ elastic_version }}-linux-x86_64.tar.gz"
+
+elastic_url: "https://artifacts.elastic.co/downloads/elasticsearch/{{ elastic_package }}"
