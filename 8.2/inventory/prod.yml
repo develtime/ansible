@@ -11,4 +11,3 @@ all:
     kibana:
       hosts:
         kibana_ubuntu:
-          elastic_url: http://elastic_ubuntu:9200

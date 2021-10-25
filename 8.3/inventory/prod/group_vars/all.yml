@@ -1,0 +1,9 @@
+---
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+
+elk_stack_version: "7.14.0"
+
+elk_es_port: 9200
+elk_kbn_port: 5601
+
+elk_es_addresses: "{{ groups['elasticsearch'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) }}"

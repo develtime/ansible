@@ -1,0 +1,2 @@
+---
+es_node_name: "{{ es_master_node }}"

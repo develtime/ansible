@@ -1,0 +1,202 @@
+---
+- name: Gather facts
+  hosts: all
+  tags: always
+  gather_facts: false
+  tasks:
+    - name: Gather minimal facts
+      setup:
+
+- name: Install Elasticsearch
+  hosts: elasticsearch
+  gather_facts: false
+  handlers:
+    - name: restart Elasticsearch
+      become: true
+      ansible.builtin.service:
+        name: elasticsearch
+        state: restarted
+        enabled: true
+    - name: open port
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ elk_es_port }}/tcp"
+        permanent: true
+        immediate: true
+        state: enabled
+  tasks:
+    - name: Download Elasticsearch rpm package
+      tags:
+        - elastic
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.get_url:
+        url: "{{ es_package_url }}"
+        dest: "{{ playbook_dir }}/files/{{ es_package_name }}"
+        mode: "0755"
+        timeout: 60
+        validate_certs: false
+      register: get_elastic
+      until: get_elastic is succeeded
+
+    - name: Upload Elasticsearch rpm package from local storage
+      tags:
+        - elastic
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/{{ es_package_name }}"
+        dest: "/tmp/{{ es_package_name }}"
+        mode: "0755"
+      register: upload_elastic
+      until: upload_elastic is succeeded
+
+    - name: Install Elasticsearch
+      tags:
+        - elastic
+      become: true
+      dnf:
+        name: "/tmp/{{ es_package_name }}"
+        disable_gpg_check: true
+        state: present
+
+    - name: Configure Elasticsearch
+      tags:
+        - elastic
+      become: true
+      ansible.builtin.template:
+        src: elasticsearch.yml.j2
+        dest: /etc/elasticsearch/elasticsearch.yml
+        mode: "0755"
+      notify:
+        - restart Elasticsearch
+        - open port
+
+- name: Install Kibana
+  hosts: kibana
+  gather_facts: false
+  handlers:
+    - name: restart Kibana
+      become: true
+      ansible.builtin.service:
+        name: kibana
+        state: restarted
+        enabled: true
+    - name: open port
+      become: true
+      ansible.posix.firewalld:
+        port: "{{ elk_kbn_port }}/tcp"
+        permanent: true
+        immediate: true
+        state: enabled
+  tasks:
+    - name: Download Kibana rpm package
+      tags:
+        - kibana
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.get_url:
+        url: "{{ kbn_package_url }}"
+        dest: "{{ playbook_dir }}/files/{{ kbn_package_name }}"
+        mode: "0755"
+        timeout: 60
+        validate_certs: false
+      register: get_kibana
+      until: get_kibana is succeeded
+
+    - name: Upload Kibana rpm package from local storage
+      tags:
+        - kibana
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/{{ kbn_package_name }}"
+        dest: "/tmp/{{ kbn_package_name }}"
+        mode: "0755"
+      register: upload_kibana
+      until: upload_kibana is succeeded
+
+    - name: Install Kibana
+      tags:
+        - kibana
+      become: true
+      dnf:
+        name: "/tmp/{{ kbn_package_name }}"
+        disable_gpg_check: true
+        state: present
+
+    - name: Configure Kibana
+      tags:
+        - kibana
+      become: true
+      ansible.builtin.template:
+        src: kibana.yml.j2
+        dest: /etc/kibana/kibana.yml
+        mode: "0755"
+      notify:
+        - restart Kibana
+        - open port
+
+- name: Install Filebeat
+  hosts: filebeat
+  gather_facts: false
+  handlers:
+    - name: restart Filebeat
+      become: true
+      ansible.builtin.service:
+        name: filebeat
+        state: restarted
+        enabled: true
+  tasks:
+    - name: Download Filebeat rpm package
+      tags:
+        - filebeat
+      delegate_to: localhost
+      run_once: true
+      ansible.builtin.get_url:
+        url: "{{ fb_package_url }}"
+        dest: "{{ playbook_dir }}/files/{{ fb_package_name }}"
+        mode: "0755"
+        timeout: 60
+        validate_certs: false
+      register: get_filebeat
+      until: get_filebeat is succeeded
+
+    - name: Upload Filebeat rpm package from local storage
+      tags:
+        - filebeat
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/files/{{ fb_package_name }}"
+        dest: "/tmp/{{ fb_package_name }}"
+        mode: "0755"
+      register: upload_filebeat
+      until: upload_filebeat is succeeded
+
+    - name: Install Filebeat
+      tags:
+        - filebeat
+      become: true
+      dnf:
+        name: "/tmp/{{ fb_package_name }}"
+        disable_gpg_check: true
+        state: present
+
+    - name: Configure Filebeat
+      tags:
+        - filebeat
+      become: true
+      ansible.builtin.template:
+        src: filebeat.yml.j2
+        dest: /etc/filebeat/filebeat.yml
+        mode: "0755"
+      notify:
+        - restart Filebeat
+
+    - name: Load Kibana dashboards
+      tags:
+        - filebeat
+        - filebeat_setup
+      become: true
+      command:
+        cmd: filebeat setup
+        chdir: /usr/share/filebeat/bin
+      register: setup_filebeat
+      until: setup_filebeat is succeeded
+      notify:
+        - restart Filebeat

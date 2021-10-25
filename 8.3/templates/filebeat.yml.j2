@@ -1,0 +1,15 @@
+# Warning: This file is Ansible Managed, manual changes will be overwritten on next playbook run.
+#
+
+output.elasticsearch:
+  hosts: [{% for es_host in elk_es_addresses-%}"http://{{ es_host }}:{{ elk_es_port }}{{ '", ' if not loop.last else '"' }}{%- endfor %}]
+
+setup.kibana:
+  host: "http://{{ hostvars['kbn_instance_1']['ansible_facts']['default_ipv4']['address'] }}:{{ elk_kbn_port }}"
+
+filebeat.config.modules.path: ${path.config}/modules.d/*.yml
+
+filebeat.modules:
+{% for fb_module in fb_modules-%}
+ - module: {{ fb_module }}
+{%- endfor %}

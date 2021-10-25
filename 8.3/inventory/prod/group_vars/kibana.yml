@@ -1,0 +1,3 @@
+---
+kbn_package_name: "kibana-{{ elk_stack_version }}-x86_64.rpm"
+kbn_package_url: "https://artifacts.elastic.co/downloads/kibana/{{ kbn_package_name }}"

@@ -1,0 +1,6 @@
+---
+fb_package_name: "filebeat-{{ elk_stack_version }}-x86_64.rpm"
+fb_package_url: "https://artifacts.elastic.co/downloads/beats/filebeat/{{ fb_package_name }}"
+
+fb_modules:
+  - system

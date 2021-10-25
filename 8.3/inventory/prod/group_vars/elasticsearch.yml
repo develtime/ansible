@@ -1,0 +1,5 @@
+---
+es_package_name: "elasticsearch-{{ elk_stack_version }}-x86_64.rpm"
+es_package_url: "https://artifacts.elastic.co/downloads/elasticsearch/{{ es_package_name }}"
+
+es_master_node: "node-1"
