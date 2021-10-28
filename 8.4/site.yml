@@ -1,0 +1,48 @@
+---
+- name: Gather facts
+  hosts: all
+  tags: always
+  gather_facts: false
+  tasks:
+    - name: Gather minimal facts
+      ansible.builtin.setup:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+- name: Install Elasticsearch
+  hosts: elasticsearch
+  gather_facts: false
+  collections:
+    - develtime.utils
+    - develtime.services
+  roles:
+    - elasticsearch
+    - openport
+
+- name: Install Kibana
+  hosts: kibana
+  gather_facts: false
+  collections:
+    - develtime.utils
+    - develtime.services
+  roles:
+    - kibana
+    - openport
+
+- name: Install Logstash
+  hosts: logstash
+  gather_facts: false
+  collections:
+    - develtime.utils
+    - develtime.services
+  roles:
+    - logstash
+    - openport
+
+- name: Install Filebeat
+  hosts: app
+  gather_facts: false
+  collections:
+    - develtime.services
+  roles:
+    - filebeat

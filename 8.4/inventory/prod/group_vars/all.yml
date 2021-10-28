@@ -1,0 +1,8 @@
+---
+elk_stack_version: 7.14.0
+
+elk_es_port: 9200
+elk_kbn_port: 5601
+elk_ls_port: 9600
+
+elk_ls_beats_port: 5044

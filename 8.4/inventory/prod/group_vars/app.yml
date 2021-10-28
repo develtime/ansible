@@ -1,0 +1,9 @@
+---
+fb_version: "{{ elk_stack_version }}"
+
+fb_kbn_host: kbn_instance_1
+fb_kbn_port: "{{ elk_kbn_port }}"
+
+fb_output_logstash: true
+fb_output_host_group: logstash
+fb_output_port: "{{ elk_ls_beats_port }}"

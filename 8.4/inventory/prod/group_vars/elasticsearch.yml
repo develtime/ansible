@@ -1,0 +1,9 @@
+---
+es_version: "{{ elk_stack_version }}"
+es_port: "{{ elk_es_port }}"
+
+es_master_nodes:
+  - es-node-1
+
+open_ports:
+  - "{{ elk_es_port }}"

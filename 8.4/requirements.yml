@@ -1,0 +1,8 @@
+---
+collections:
+  - name: https://github.com/develtime/galaxy.git#/develtime/utils
+    type: git
+    version: main
+  - name: https://github.com/develtime/galaxy.git#/develtime/services
+    type: git
+    version: main

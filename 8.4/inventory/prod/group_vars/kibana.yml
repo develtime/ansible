@@ -1,0 +1,9 @@
+---
+kbn_version: "{{ elk_stack_version }}"
+kbn_port: "{{ elk_kbn_port }}"
+
+kbn_es_host_group: elasticsearch
+kbn_es_port: "{{ elk_es_port }}"
+
+open_ports:
+  - "{{ elk_kbn_port }}"

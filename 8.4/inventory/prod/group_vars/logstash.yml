@@ -1,0 +1,10 @@
+ls_version: "{{ elk_stack_version }}"
+ls_port: "{{ elk_ls_port }}"
+ls_beats_port: "{{ elk_ls_beats_port }}"
+
+open_ports:
+  - "{{ elk_ls_port }}"
+  - "{{ elk_ls_beats_port }}"
+
+ls_output_host_group: elasticsearch
+ls_output_port: "{{ elk_es_port }}"
