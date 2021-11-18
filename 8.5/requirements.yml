@@ -1,5 +1,0 @@
----
-collections:
-  - name: https://github.com/develtime/galaxy.git#/develtime/utils
-    type: git
-    version: main
